@@ -8,6 +8,7 @@
 2变量名不能用数字开头
 3不能用引号不然变成字符串
 4=左边是变量名（被赋上值）；右边是值
+5.变量名一般用下划线命名法，而类一般用pascal命名法（比如OutfitOfTheDay）
 
 第三part:计算器
 要先引入math：import math
@@ -125,7 +126,7 @@ while i<5
 在字符串前加f，花括号里加变量名，也可以把值直接运行出来。
 
 第十五part：
-sum函数：圆括号里放方括号，放括号里放数字，数字之间用逗号隔开，对数字求和。
+sum函数：圆括号里放方括号，方括号里放数字，数字之间用逗号隔开，对数字求和。
 type函数：用于获取对象的类型
 用def定义函数：告诉python，如果以后有出现函数名，就执行下面的代码。
 def后面加空格加自己定义的函数名加圆括号里放参数，参数之间用逗号隔开，然后下一行缩进之后变量名=参数之间的运算
@@ -228,3 +229,73 @@ with open（“文件路径”，“w”，encoding=“utf-8”） as 变量名�
 with open（“文件路径”，“a”，encoding=“utf-8”） as 变量名（affiliate（v.n.附属）也是如果不存在则直接创建一个）
 同时读写：
 with open（“文件路径”，“r+”，encoding=“utf-8”） as 变量名（文字分行：…，\n…，\n）
+
+第二十一part：
+try：（放上可能报错的代码，代码正常运行）
+   要运行的代码
+except 错误1（错误名字）as 变量名：#变量名就会等于错误名的字符串
+   要运行的代码
+except 错误2:
+   要运行的代码
+except ：（不输入错误名的话会默认所有的或剩下所有的错误，如果前面捕捉了后面就不会再捕捉了）
+   要运行的代码
+else：（后面放没有任何错误时要执行的语句）
+   要运行的代码
+finally：（后面的代码无论错误与否都会被执行）
+要运行的代码
+
+常见错误：IndentationErro（缩进错误）,ImportError（导入模块错误）,ArithmeticError（计算错误）,IndexError（索引错误）,ZeroDivisionError（分母为零错误）,AttributeError（属性错误）,ValueError（值错误）,KeyError（键错误）
+
+第二十二part：实现代码与测试代码
+- 实现代码
+```
+# 文件名：bank_account.py
+class BankAccount： #（变量名一般用下划线命名法，类一般用Pascal命名法）
+   def _init_(.self,initial_balance=0)
+   #初始化账户，设置初始余额（balance有余额的意思），initial_balance=0的写法完全正确，此时若BankAccount()则默认为0,若传入参数则为参数
+      self.balance=initial_balance
+   
+   def deposit(self,amount):
+#de'posit:存款，押金，沉积物，和后面的withdraw,一样都是方法
+      self.balance+=amount
+#+=：将左侧变量的当前值与右侧表达式的值相加，然后将结果重新赋值给左侧变量。
+      return self.balance
+      
+   def withdraw(self,amount):   
+      if amount>self.balance
+         raise ValueError(“余额不足”)
+#raise：主动抛出一个异常，避免余额变成负值
+    self.balance-=amount
+    return self.balance
+```
+- 测试代码
+```
+import unittest
+#python官方自带的自动化测试框架(Automated Testing Framework)，按格式写好就会自动帮你跑
+from bank_account import BankAccount   #引入实现代码
+class TestBankAccount(unittest.TestCase):
+#unittest.TestCase:
+#
+   def setUp(self)
+      print("正在创建一个新的银行账户实例")
+      self.account=BankAccount(initial_balance=1000)
+#如果没有setUp，则需要在test_deposit,test_withdraw,test_insufficient_funds里各写一遍self.account=BankAccount(1000)
+   def test_deposit(self):   #测试存钱，此时self.account是setUp刚创建的对象，余额是1000
+      self.account.deposit(200):
+      self.assertEqual(self.account.balance,1200)
+      print("测试1：存钱通过！")
+   def test_withdraw(self):
+      self.account.withdraw(300)
+      self.assertEqual(self.account.balance,700)
+      print("测试2：取钱通过！")
+   def test_insufficient_funds(self):  #此时同样创建了一个全新的余额是1000元
+       with self.assertRaises(ValueError):  #TestCase的格式，里面填你期望的错误格式
+           self.account.withdraw(10000)
+       print("测试3：余额不足异常抛出通过！")
+#如果并没有错误，就会抛出AssertionError并中断这个测试方法
+if _name_ == '_main_':
+#在python中，python解释器会头头在文件最顶部塞入一个_name_变量，如果_name_=='main'就会把里面的代码全部跑一边，如果_name_=='文件的真名',那么只引入代码而不运行，在这里的意思就是如果这些代码是主程序的代码，就打开下面的main开关，反之就不打开
+   unittest.main()  #测试命令开始的总开关
+```
+unittest:[[unittest]]
+unittest.TestCase:[[unittest.TestCase]]
