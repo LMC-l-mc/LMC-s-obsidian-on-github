@@ -249,53 +249,109 @@ finally：（后面的代码无论错误与否都会被执行）
 第二十二part：实现代码与测试代码
 - 实现代码
 ```
-# 文件名：bank_account.py
-class BankAccount： #（变量名一般用下划线命名法，类一般用Pascal命名法）
-   def _init_(.self,initial_balance=0)
-   #初始化账户，设置初始余额（balance有余额的意思），initial_balance=0的写法完全正确，此时若BankAccount()则默认为0,若传入参数则为参数
-      self.balance=initial_balance
-   
-   def deposit(self,amount):
-#de'posit:存款，押金，沉积物，和后面的withdraw,一样都是方法
-      self.balance+=amount
-#+=：将左侧变量的当前值与右侧表达式的值相加，然后将结果重新赋值给左侧变量。
-      return self.balance
-      
-   def withdraw(self,amount):   
-      if amount>self.balance
-         raise ValueError(“余额不足”)
-#raise：主动抛出一个异常，避免余额变成负值
-    self.balance-=amount
-    return self.balance
+# 文件名：bank_account.py  
+class BankAccount:  
+    # （变量名一般用下划线命名法，类一般用Pascal命名法）  
+  
+    def __init__(self, initial_balance=0):  
+        # 初始化账户，设置初始余额（balance有余额的意思），initial_balance=0的写法完全正确，此时若BankAccount()则默认为0,若传入参数则为参数  
+        self.balance = initial_balance  
+  
+    def deposit(self, amount):  
+        # de'posit:存款，押金，沉积物，和后面的withdraw,一样都是方法  
+        self.balance += amount  
+        # +=：将左侧变量的当前值与右侧表达式的值相加，然后将结果重新赋值给左侧变量。  
+        return self.balance  
+  
+    def withdraw(self, amount):  
+        if amount > self.balance:  
+            raise ValueError("余额不足")  
+            # raise：主动抛出一个异常，避免余额变成负值  
+        self.balance -= amount  
+        return self.balance
 ```
 - 测试代码
 ```
-import unittest
-#python官方自带的自动化测试框架(Automated Testing Framework)，按格式写好就会自动帮你跑
-from bank_account import BankAccount   #引入实现代码
-class TestBankAccount(unittest.TestCase):
-#unittest.TestCase:
-#
-   def setUp(self)
-      print("正在创建一个新的银行账户实例")
-      self.account=BankAccount(initial_balance=1000)
+import unittest  
+#python官方自带的自动化测试框架(Automated Testing Framework)，按格式写好就会自动帮你跑  
+from bank_account import BankAccount   #引入实现代码（from 文件名 import 函数名/类名）  
+class TestBankAccount(unittest.TestCase):  
+#成为unittest.TestCase的子类，继承unittest.TestCase的各种测试功能  
+   def setUp(self):
+      print("正在创建一个新的银行账户实例")  
+      self.account=BankAccount(initial_balance=1000)  
 #如果没有setUp，则需要在test_deposit,test_withdraw,test_insufficient_funds里各写一遍self.account=BankAccount(1000)
-   def test_deposit(self):   #测试存钱，此时self.account是setUp刚创建的对象，余额是1000
-      self.account.deposit(200):
-      self.assertEqual(self.account.balance,1200)
-      print("测试1：存钱通过！")
-   def test_withdraw(self):
-      self.account.withdraw(300)
-      self.assertEqual(self.account.balance,700)
-      print("测试2：取钱通过！")
-   def test_insufficient_funds(self):  #此时同样创建了一个全新的余额是1000元
-       with self.assertRaises(ValueError):  #TestCase的格式，里面填你期望的错误格式
-           self.account.withdraw(10000)
-       print("测试3：余额不足异常抛出通过！")
-#如果并没有错误，就会抛出AssertionError并中断这个测试方法
-if _name_ == '_main_':
-#在python中，python解释器会头头在文件最顶部塞入一个_name_变量，如果_name_=='main'就会把里面的代码全部跑一边，如果_name_=='文件的真名',那么只引入代码而不运行，在这里的意思就是如果这些代码是主程序的代码，就打开下面的main开关，反之就不打开
+#要先创建对象，才能再调用方法
+   def test_deposit(self):  
+#测试存钱，每一个测试用例都是类下面的一个方法，此时self.account是setUp刚创建的对象，余额1000  
+#名字必须以test_开头，unittest只把test_开头的当成测试用例  
+      self.account.deposit(200)  
+      self.assertEqual(self.account.balance,1200)  
+#调用TestCase类里的assertEqual方法，避免用assert错了就直接不测  
+#传入的第一个参数和第二个参数如果相等，则显示测试通过，不相等则相反  
+      print("测试1：存钱通过！")  
+   def test_withdraw(self):  
+      self.account.withdraw(300)  
+      self.assertEqual(self.account.balance,700)  
+      print("测试2：取钱通过！")  
+   def test_insufficient_funds(self):  #此时同样创建了一个全新的余额是1000元  
+       with self.assertRaises(ValueError):  #TestCase的格式，里面填你期望的错误格式  
+           self.account.withdraw(10000)  
+       print("测试3：余额不足异常抛出通过！")  
+#如果并没有错误，就会抛出AssertionError并中断这个测试方法  
+if __name__ == '_main_':  
+#在python中，python解释器会头头在文件最顶部塞入一个_name_变量，如果_name_=='main'就会把里面的代码全部跑一边，如果_name_=='文件的真名',那么只引入代码而不运行，在这里的意思就是如果这些代码是主程序的代码，就打开下面的main开关，反之就不打开  
    unittest.main()  #测试命令开始的总开关
 ```
 unittest:[[unittest]]
 unittest.TestCase:[[unittest.TestCase]]
+assert:后接任何布尔（bool）表达式（也就是值为True或False的表达式），在测试时后面应该接上我们认为应该为True的表达式，如果确实是True那么无事发生，继续运行后面的代码，如果是False，就会出现"AssertionError",程序终止。
+unittest.TestCase类里常见的测试方法：
+```
+assertEqual(A,B)=assertA==B
+assertTrue(A)=assert A is True
+assertIn(A,B)=assert A in B
+assertNotEqual(A,B)=assertA!==B
+assertFlase(A)=assert A is Flase
+assertNotIn(A,B)=assert A Not in B
+#虽然底层逻辑都很相似可以互相替换，但用更有针对性的方法在失败时会给出更详细的原因
+```
+
+第二十三part：
+高阶函数（f（f（x））：将函数变成参数
+```
+def calculate_and_print(number,culculator,formatter):  
+    result=culculator(number)  
+    formatter(number,result)  
+def calculate_square(number):  
+    return number*number  
+def calculate_cube(number):  
+    return number*number*number  
+def calculate_plus_10(number):  
+    return number+10  
+def print_with_vertical_bar1(number,result):  
+    print(f'''您输入的数字为{number}  
+结果为{result}  
+采用格式1''')  
+def print_with_vertical_bar2(number,result):  
+    print(f'您输入的数字为{number},结果为{result},采用格式2')  
+calculate_and_print(100,calculate_square,print_with_vertical_bar1)  
+calculate_and_print(100,calculate_cube,print_with_vertical_bar2)  
+calculate_and_print(100,calculate_plus_10,print_with_vertical_bar1)
+```
+输出结果：
+```
+您输入的数字为100
+结果为10000
+采用格式1
+您输入的数字为100,结果为1000000,采用格式2
+您输入的数字为100
+结果为110
+采用格式1
+```
+匿名函数：（lambda 参数1，参数2：参数之间的运算）（数字，数字）
+匿名函数冒号后面只能有一个语句和表达式
+被高阶函数调用时：
+```
+calculate_and_print(100,lambda number:number+10,print_with_vertical_bar1)
+```
