@@ -10,7 +10,7 @@
     "postProcess": true,
     "displayProgress": true,
     "inlineHTML": false,
-    "exportPath": "C:\\LMC-github-html-obsidian",
+    "exportPath": "C:\\html版的学习笔记（推送文件夹）",
     "filesToExport": [],
     "useFallbackRenderer": false,
     "addBodyClasses": true,

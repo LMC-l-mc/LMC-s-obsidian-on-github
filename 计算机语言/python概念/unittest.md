@@ -4,7 +4,6 @@ unittest  的本质是一个基于 xUnit 架构的自动化测试框架（Autom
 
 结合你提供的银行账户代码， unittest  在底层实现了以下四个核心科学机制：
 
-
 1. 测试夹具（Test Fixture）与生命周期管理
 
 在测试理论中，Fixture 指的是测试运行所需的准备环境和清理动作。 unittest  通过严格的生命周期钩子（Lifecycle Hooks）来实现这一点。
