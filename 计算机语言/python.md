@@ -363,7 +363,8 @@ calculate_and_print(100,calculate_plus_10,print_with_vertical_bar1)
 ```
 calculate_and_print(100,lambda number:number+10,print_with_vertical_bar1)
 ```
-其它：
+
+# 自学1：
 inspect是python官方提供的能查看其他代码的标准库（只能看py文件）
 - 查看源代码：inspect.getsource()
 - 查看一个对象的属性和方法:inspect.getnumbers
@@ -378,3 +379,14 @@ print(inspect.getsource(urllib.request))
 import urllib.request  
 print(urllib.request.__file__)
 ```
+
+# 自学2
+encode:编码，是字符串对象的方法，将字符串转换为字节序列的过程
+```
+my_string=("Hello")  
+encode_string=my_string.encode("utf-8")  
+print(encode_string)
+```
+encoding:
+decode:
+decoding
