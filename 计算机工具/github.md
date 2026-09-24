@@ -17,10 +17,14 @@
 想看远程有什么更新：在终端运行git pull origin master
 origin：
 是Git给远程仓库默认起的别名，Git会将远程地址命名为origin，而master时远程仓库的分支名称，因此origin/master就是“远程仓库的master分支”
-创建新分支：基于你现在当前所在的分支创建一个全新的分支
+## 创建新分支：
+基于你现在当前所在的分支创建一个全新的分支
 创建新分支依据：在已有分支的基础上创建新分支
-合并分支：对**AI**说：把把XX分支合并进XX分支
-签出（已分离）（checkout（detached））：点击后整个仓库就会回退到某个历史版本，不过这个状态只适合查看代码，不适合更改代码，因为detached表示分离头指针，表示不处于任何一个分支的管理中，在里面修改容易搞丢代码，想退回去的话点左下角，然后选择回你要的分支，而如果你想基于这个历史版本开发，请务必点击列表顶部的创建新分支。
+## 合并分支：
+对**AI**说：把把XX分支合并进XX分支
+
+## 签出（已分离）（checkout（detached））：
+点击后整个仓库就会回退到某个历史版本，不过这个状态只适合查看代码，不适合更改代码，因为detached表示分离头指针，表示不处于任何一个分支的管理中，在里面修改容易搞丢代码，想退回去的话点左下角，然后选择回你要的分支，而如果你想基于这个历史版本开发，请务必点击列表顶部的创建新分支。
 # commit ID：
 把鼠标放到某一次提交上面，有一个数字+英文的小编号就是这个ID，这个ID是git通过哈希算法自动计算出来的，一个ID有长有短，一个commit ID在一个仓库里是绝对唯一的，如果我们需要把仓库回退到某一个历史版本，可以在这个版本上右键，然后复制提交哈希(Copy Commit Hash)，然后把这串长ID粘贴给ai，告诉它把仓库回退到ID提交的状态，后面的改动都不要了（ai在底层执行git，reset —hard），如果需要撤回某次提交而不修改后面的提交，让ai把ID的这次提交撤销掉，保持其它不变（ai 在底层执行的是revert命令），不过其实没必要改得这么决绝，把错的历史保留下来也没什么要是这么决绝的改掉了，而以后又发现其实没问题又要后悔自己的冲动了。
 合并分支：可以指挥ai合并
@@ -29,7 +33,7 @@ origin：
 当前分支处于哪次commit上
 # worktree：
 建立一个不影响主干文件夹的开发环境
-工作区（working directory）：电脑磁盘上的本地文件夹
+工作区（working directory）：电脑磁盘上的本地文件夹，虽然是一个新的文件夹，但是他们共享同一个.git对象数据库，后续可以手动合并到main分支里
 # git clone：
 把远端仓库保存到本地
 # git add（添加所有修改到暂存区）+git commit：
@@ -72,3 +76,25 @@ GitHub 提供的免费静态网站托管服务，让你能把代码仓库里的 
 强制使用 HTTPS —— 确保网站通过加密连接访问，提升安全性（对默认域名是强制的）。
 # Custom domain：
 自定义域名
+
+# 保护main分支
+## 1.
+setting-branches
+### Add branch ruleset
+### Add classic branch protection rule
+- Branch name pattern：填main
+- Require a pull request before merging(在合并之前，必须通过拉取请求，勾了之后别人就不能直接向这个分支（main)push代码，必须新建一个分支然后pull request）
+	- Require approvals：需要团队的"Approve"的数量（个人项目你是上帝）
+	- Dismiss stale（陈腐的，尿，使陈旧） pull request approvals when new commits are pushed：代码改了之后之前的approve失效（tips：只有仓库所有者和协作者可以同意pull request，同意了之后可能还要自动化测试，等待其他审查者，等待解决合并冲突……完成了之后只有仓库管理员能点击merge pull request来合并分支，改变代码）
+	- Require review from Code Owners:需要指定的代码工程师的同意
+	- Require approval of the most recent reviewable push：之前的审核生效，但最新一次pull request被审核通过之后还要再由不是pull request者同意一次
+- Require status checks to pass before merging：在合并之前，要经过CI/CD工具的状态检查，状态检查后才能merge（tip：CI-Continue Integration持续集成-团队成员把代码提交到共享的仓库时CI工具会自动帮你编译代码，运行测试；CD-Continue Deployment自动化部署，帮你打包好，但是这个选项需要你配置一个自动化测试才能在下面的填空里选测试）
+- Require conversation resolution before merging：解决了所有的未解决的对话后才能pull request
+- Require signed commits（Commits pushed to matching branches must have verified（被证实的，证实） signatures）：拒绝任何没有有效GPG或SSH签名的代码提交
+-   Require linear history:阻止合并提交被推送到匹配的分支（Prevent merge commits from being pushed to matching branches.），其它的分支和main分支合并时可能会有两个父节点（前一次记录），，够了之后无法通过普通的merge来合并分支，只能使用Rebase和Squash来合并，**了解一下这两个，有需求再去学**
+	- git rebase:把feather分支直接复制一份接在main的最后面
+	- git Squash（南瓜，挤进，塞入）:把分支上的零碎提交压缩成一个全新的节点，直接接在main的后面
+	- 在GitHub提交时选“Squash and merge"或”Rebase and merge"即可
+- Require deployments to succeed before merging：必须在指定的测试环境中成功部署才能合并。（Choose which environments must be successfully deployed to before branches can be merged into a branch that matches this rule.）
+- Lock branch：锁定分支，分支只读，任何人都不能推送代码，指定的分支在仓库里永远不动，但依旧可以fork下来继续开发。(Branch is read-only. Users cannot push to the branch.)
+- Do not allow bypassing the above settings:勾了之后管理员也要遵守上述规则，这条在管理员的特权之上。（The above settings will apply to administrators and custom roles with the "bypass branch protections" permission.）
